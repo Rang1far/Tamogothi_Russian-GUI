@@ -12,7 +12,8 @@ def lose_par():
     check_eat()
     check_sleep()
     check_play()
-
+    game.after(60000, lose_par)
+        
     # Using try-expect to open fiels
     # And checking if pars < 0 (same as death)
 
@@ -93,5 +94,8 @@ Button(game, text='Спать', width=100, height=5, command=sleep_button).pack(
 Button(game, text='Играть(С костями)', height=5, width=100, command=play_button).pack()
 
 game.after(60000, lose_par)
+
+# Need to check if gul not dead after starting game
+lose_par()
 
 mainloop()
