@@ -5,27 +5,31 @@ from time import *
 import os
 from winsound import *
 
-
+life = 0
 
 # Lose parameters
 def lose_par():
     check_eat()
     check_sleep()
     check_play()
+    exit_if_dead()
     game.after(60000, lose_par)
-        
+
     # Using try-expect to open fiels
     # And checking if pars < 0 (same as death)
+    
+    # Using os.remove to delite "save" files
 
 
 def check_eat():
+    global life
     try:
         with open('last_eat_time.txt', 'r') as file:
             last_eat_time = int(file.read())
     except:
         last_eat_time = time()
 
-    elapsed_time = time() - last_eat_time
+    elapsed_time = last_eat_time - time()
     life = int(elapsed_time)
     if life < 0:
         msgbox.showerror(title="Гуль сдох", message="Вы не кромили его 12 часов")
@@ -33,13 +37,14 @@ def check_eat():
 
 
 def check_sleep():
+    global life
     try:
         with open('last_sleep_time.txt', 'r') as file:
             last_sleep_time = int(file.read())
     except:
         last_sleep_time = time()
 
-    elapsed_time = time() - last_sleep_time
+    elapsed_time = last_sleep_time - time()
     life = int(elapsed_time)
     if life < 0:
         msgbox.showerror(title="Гуль сдох", message="Вы не ложили его спать 12 часов")
@@ -47,18 +52,24 @@ def check_sleep():
 
 
 def check_play():
+    global life
     try:
         with open('last_play_time.txt', 'r') as file:
             last_play_time = int(file.read())
     except:
         last_play_time = time()
 
-    elapsed_time = time() - last_play_time
+    elapsed_time = last_play_time - time()
     life = int(elapsed_time)
     if life < 0:
         msgbox.showerror(title="Гуль сдох", message="Вы не играли с ним 12 часов")
         os.remove("last_play_time.txt")
 
+    # If dead - close window(restart game)
+    
+def exit_if_dead():
+    if life < 0:
+        exit()
 
 # Buttons
 def eat_button():
@@ -67,11 +78,13 @@ def eat_button():
         file.write(str(last_eat_time))
     PlaySound("eat_sound.wav", SND_ASYNC)
 
+
 def sleep_button():
     last_sleep_time = time()
     with open('last_sleep_time.txt', 'w') as file:
         file.write(str(last_sleep_time))
     PlaySound("sleep_sound.wav", SND_ASYNC)
+
 
 def play_button():
     last_play_time = time()
